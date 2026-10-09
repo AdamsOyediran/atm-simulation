@@ -1,5 +1,6 @@
 #include<stdio.h>
 void print_menu(void);
+int read_int(const char *prompt);
 
 int main(void)
 {
@@ -18,16 +19,14 @@ int main(void)
     printf("===ATM SIMULATION===\n");
     printf("=====WELCOME TO OPAY====\n");
 
-    printf("ENTER YOUR PIN(4-DIGIT):\n");
-    scanf("%d", &ent_pin);
+    ent_pin = read_int("ENTER YOUR PIN(4-DIGIT): ");
     
     if (pin != ent_pin)
     {
         while (ent_pin != pin)
         {
             printf("INCORRECT PIN.\n");
-            printf("ENTER CORRECT PIN(4-DIGIT):\n");
-            scanf("%d", &ent_pin);
+            ent_pin = read_int("ENTER YOUR PIN(4-DIGIT): ");
 
             if (pin == ent_pin)
             {
@@ -44,40 +43,35 @@ int main(void)
     printf("1 ===MAIN MENU===\n");
     printf("2 ===ACCOUNT DATA===\n");
 
-    printf("ENTER ACTION(1-2)\n");
-    scanf("%d", &screen);
+    screen = read_int("ENTER ACTION(1-2): ");
 
     switch (screen)
     {
         
     case 1:
         print_menu();
-        printf("ENTER ACTION(1-5)\n");
-        scanf("%d", &action);
+        action = read_int("ENTER ACTION(1-5): ");
         
         switch (action)
         {
         case 1:
                 printf("==ACCOUNT BALANCE==\n");
-                printf("$%d\n", acct_bal);
+                printf("#%d\n", acct_bal);
             break;
 
         case 2:
                 printf("==DEPOSIT==\n");
-                printf("ENTER DEPOSIT AMOUNT\n");
-                scanf("%d", &depo);
+                depo = read_int("ENTER DEPOSIT AMOUNT: ");
                 acct_bal += depo;
                 
             
-                printf("ACCOUNT BALANCE: $%d\n", acct_bal);
+                printf("ACCOUNT BALANCE: #%d\n", acct_bal);
             break;
         
         
         case 3:
                 printf("==WITHDRAW==\n");
-                printf("ENTER WITHDRAWAL AMOUNT\n");
-                scanf("%d", &wdraw);
-
+                wdraw = read_int("ENTER WITHDRAWAL AMOUNT:");
                 if (wdraw > acct_bal)
                 {
                     printf("INSUFFICIENT FUNDS\n");
@@ -92,8 +86,7 @@ int main(void)
         case 4:
         
                 printf("==RESET PIN==\n");
-                printf("ENTER NEW PIN(4-DIGIT):\n");
-                scanf("%d", &new_pin);
+                new_pin = read_int("ENTER NEW PIN(4-DIGIT): ");
             
                 pin = new_pin;
                 printf("NEWPIN: %d\n", pin);
@@ -115,7 +108,7 @@ int main(void)
             printf("ACCOUNT NAME: %s\n", name);
             printf("PIN: %d\n", pin);
             printf("ACCOUNT NUMBER: %ld\n", acct_number);
-            printf("ACCOUNT BALANCE: $%d\n", acct_bal);
+            printf("ACCOUNT BALANCE: #%d\n", acct_bal);
 
         break;
 
@@ -134,4 +127,30 @@ void print_menu(void)
     printf("3 Withdraw\n");
     printf("4 Change PIN\n");
     printf("5 Exit\n");
+}
+
+int read_int(const char *prompt)
+{
+    int value;
+    int result;
+
+    while (1)
+    {
+        printf("%s", prompt);
+        result = scanf("%d", &value);
+
+        if (result == 1)
+        {
+            return value;
+        }
+        else
+        {
+            printf("That is not a number. Try again.\n");
+        }
+
+        while (getchar() != '\n')
+        {
+            ;
+        }
+    }
 }
