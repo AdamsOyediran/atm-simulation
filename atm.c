@@ -4,11 +4,11 @@ int read_int(const char *prompt);
 void show_balance(int balance);
 int do_deposit(int balance);
 int do_withdraw(int balance);
+int authenticate(int correct_pin);
 
 int main(void)
 {
     int pin = 1234;
-    int ent_pin;
     int action;
     int screen;
     int acct_bal = 1000000;
@@ -19,26 +19,10 @@ int main(void)
     
     printf("=====ATM SIMULATION=====\n");
     printf("====WELCOME TO OPAY====\n");
-
-    ent_pin = read_int("ENTER YOUR PIN(4-DIGIT): ");
     
-    if (pin != ent_pin)
+    if (!authenticate(pin))
     {
-        while (ent_pin != pin)
-        {
-            printf("INCORRECT PIN.\n");
-            ent_pin = read_int("ENTER YOUR PIN(4-DIGIT): ");
-
-            if (pin == ent_pin)
-            {
-                printf("==LOGIN SUCCESSFUL==\n");
-            }
-        }
-        
-    }
-    else if ( pin == ent_pin)
-    {
-        printf("==SUCCESSFUL LOG IN==\n");
+        return 1;
     }
 
     printf("1 ===MAIN MENU===\n");
@@ -181,4 +165,26 @@ int do_withdraw(int balance)
 
     balance -= amount;
     return balance;
+}
+
+int authenticate(int correct_pin)
+{
+    int attempts = 0;
+    int entered_pin;
+
+    while (attempts < 3)
+    {
+        entered_pin = read_int("ENTER YOUR PIN(4-DIGIT): ");
+
+        if (entered_pin == correct_pin)
+        {
+            printf("==LOGIN SUCCESSFUL==\n");
+            return 1; // Authentication successful
+        }
+
+            printf("INCORRECT PIN.\n");
+            attempts++;
+    }
+    printf("TOO MANY FAILED ATTEMPTS. CARD BLOCKED.\n");
+    return 0; // Authentication failed
 }
