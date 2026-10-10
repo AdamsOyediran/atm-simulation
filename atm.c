@@ -1,6 +1,9 @@
 #include<stdio.h>
 void print_menu(void);
 int read_int(const char *prompt);
+void show_balance(int balance);
+int do_deposit(int balance);
+int do_withdraw(int balance);
 
 int main(void)
 {
@@ -9,15 +12,13 @@ int main(void)
     int action;
     int screen;
     int acct_bal = 1000000;
-    int depo;
-    int wdraw;
     int new_pin;
     char name[50] = "ADAMS OYEDIRAN";
     long int acct_number = 9078803030;
     
     
-    printf("===ATM SIMULATION===\n");
-    printf("=====WELCOME TO OPAY====\n");
+    printf("=====ATM SIMULATION=====\n");
+    printf("====WELCOME TO OPAY====\n");
 
     ent_pin = read_int("ENTER YOUR PIN(4-DIGIT): ");
     
@@ -56,31 +57,19 @@ int main(void)
         {
         case 1:
                 printf("==ACCOUNT BALANCE==\n");
-                printf("#%d\n", acct_bal);
+                show_balance(acct_bal);
             break;
 
         case 2:
                 printf("==DEPOSIT==\n");
-                depo = read_int("ENTER DEPOSIT AMOUNT: ");
-                acct_bal += depo;
-                
-            
-                printf("ACCOUNT BALANCE: #%d\n", acct_bal);
+                acct_bal = do_deposit(acct_bal);
             break;
         
         
         case 3:
                 printf("==WITHDRAW==\n");
-                wdraw = read_int("ENTER WITHDRAWAL AMOUNT:");
-                if (wdraw > acct_bal)
-                {
-                    printf("INSUFFICIENT FUNDS\n");
-                }
-                else
-                {
-                    acct_bal -= wdraw;
-                    printf("ACCOUNT BALANCE: $%d\n", acct_bal);
-                }
+                acct_bal = do_withdraw(acct_bal);
+                show_balance(acct_bal);
             break;
         
         case 4:
@@ -108,7 +97,7 @@ int main(void)
             printf("ACCOUNT NAME: %s\n", name);
             printf("PIN: %d\n", pin);
             printf("ACCOUNT NUMBER: %ld\n", acct_number);
-            printf("ACCOUNT BALANCE: #%d\n", acct_bal);
+            show_balance(acct_bal);
 
         break;
 
@@ -153,4 +142,43 @@ int read_int(const char *prompt)
             ;
         }
     }
+}
+
+void show_balance(int balance)
+{
+    printf("ACCOUNT BALANCE: $%d\n", balance);
+}
+
+int do_deposit(int balance)
+{
+    int amount = read_int("ENTER DEPOSIT AMOUNT: ");
+
+    if (amount <= 0)
+    {
+        printf("INVALID AMOUNT\n");
+        return balance;
+    }
+
+    balance += amount;
+    return balance;
+}
+
+int do_withdraw(int balance)
+{
+    int amount = read_int("ENTER WITHDRAWAL AMOUNT: ");
+
+    if (amount <= 0)
+    {
+        printf("INVALID AMOUNT\n");
+        return balance;
+    }
+
+    if (amount > balance)
+    {
+        printf("INSUFFICIENT FUNDS\n");
+        return balance;
+    }
+
+    balance -= amount;
+    return balance;
 }
