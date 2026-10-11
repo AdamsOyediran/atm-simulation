@@ -5,16 +5,16 @@ void show_balance(int balance);
 int do_deposit(int balance);
 int do_withdraw(int balance);
 int authenticate(int correct_pin);
+int change_pin(int current_pin);
 
 int main(void)
 {
     int pin = 1234;
     int action;
-    int screen;
     int acct_bal = 1000000;
-    int new_pin;
     char name[50] = "ADAMS OYEDIRAN";
     long int acct_number = 9078803030;
+    int running = 1;
     
     
     printf("=====ATM SIMULATION=====\n");
@@ -25,17 +25,10 @@ int main(void)
         return 1;
     }
 
-    printf("1 ===MAIN MENU===\n");
-    printf("2 ===ACCOUNT DATA===\n");
-
-    screen = read_int("ENTER ACTION(1-2): ");
-
-    switch (screen)
+    while(running)
     {
-        
-    case 1:
         print_menu();
-        action = read_int("ENTER ACTION(1-5): ");
+        action = read_int("ENTER ACTION(1-6): ");
         
         switch (action)
         {
@@ -47,6 +40,7 @@ int main(void)
         case 2:
                 printf("==DEPOSIT==\n");
                 acct_bal = do_deposit(acct_bal);
+                show_balance(acct_bal);
             break;
         
         
@@ -59,34 +53,26 @@ int main(void)
         case 4:
         
                 printf("==RESET PIN==\n");
-                new_pin = read_int("ENTER NEW PIN(4-DIGIT): ");
-            
-                pin = new_pin;
-                printf("NEWPIN: %d\n", pin);
-        
+                pin = change_pin(pin);
             break;
 
         case 5:
                 printf("==EXIT==\n");
                 printf("THANK YOU FOR USING OPAY\n");
+                running = 0;
+            break;
+
+        case 6:
+                printf("===ACCOUNT DATA===\n");
+                printf("ACCOUNT NAME: %s\n", name);
+                printf("ACCOUNT NUMBER: %ld\n", acct_number);
+                show_balance(acct_bal);
+
             break;
 
         default:
                 printf("INVALID ACTION\n");
         }
-        break;
-
-    case 2:
-            printf("===ACCOUNT DATA===\n");
-            printf("ACCOUNT NAME: %s\n", name);
-            printf("PIN: %d\n", pin);
-            printf("ACCOUNT NUMBER: %ld\n", acct_number);
-            show_balance(acct_bal);
-
-        break;
-
-    default:
-        printf("INVALID ACTION\n");
     }
 
     return 0;
@@ -100,6 +86,7 @@ void print_menu(void)
     printf("3 Withdraw\n");
     printf("4 Change PIN\n");
     printf("5 Exit\n");
+    printf("6 Account data\n");
 }
 
 int read_int(const char *prompt)
@@ -182,9 +169,23 @@ int authenticate(int correct_pin)
             return 1; // Authentication successful
         }
 
-            printf("INCORRECT PIN.\n");
-            attempts++;
+        printf("INCORRECT PIN.\n");
+        attempts++;
     }
     printf("TOO MANY FAILED ATTEMPTS. CARD BLOCKED.\n");
     return 0; // Authentication failed
+}
+
+int change_pin(int current_pin)
+{
+    int new_pin = read_int("ENTER NEW PIN(4-DIGIT): ");
+
+    if (new_pin < 1000 || new_pin > 9999)
+    {
+        printf("INVALID PIN. MUST BE A 4-DIGIT NUMBER.\n");
+        return current_pin; // Return the current pin if invalid
+    }
+
+    printf("PIN CHANGED SUCCESSFULLY.\n");
+    return new_pin; // Return the new pin
 }
